@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--status用来指定log4j自身内部的信息输出的打印日志的级别  All < Trace < Debug < Info < Warn < Error < Fatal < OFF -->
+<!--monitorinterval用于指定log4j自动重新配置的监测间隔时间，单位是s,最小是5s.-->
+<Configuration status="off" monitorInterval="1800">
+
+    <properties>
+        <!--${sys:catalina.home}：tomcat根目录-->
+        <property name="logPath">/logs/template</property>
+        <property name="file">%d{yyyyMMdd-mm-ss}</property>
+        <property name="patternLayout">[%t] %-d{yy-MM-dd HH:mm:ss,SSS} %-5p:%X{user} - %c - %m%n</property>
+    </properties>
+
+
+    <Appenders>
+        <!--Console节点用来定义输出到控制台的Appender-->
+        <!--target:SYSTEM_OUT 或 SYSTEM_ERR,一般只设置默认:SYSTEM_OUT-->
+        <Console name="Console" target="SYSTEM_OUT">
+
+            <!--PatternLayout:输出格式，不设置默认为:%m%n-->
+            <PatternLayout pattern="${patternLayout}"/>
+        </Console>
+
+
+        <!--fileName:指定输出日志的目的文件带全路径的文件名.-->
+        <!--filePattern:指定新建日志文件的名称格式.-->
+        <RollingFile name="INFO" filename="${logPath}/info.log"
+                     filepattern="${logPath}/info/${file}-info.log.zip">
+            <Filters>
+                <!--设置只输出级别为INFO的日志-->
+                <ThresholdFilter level="INFO"/>
+                <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+
+
+            <PatternLayout charset="utf-8" pattern="${patternLayout}"/>
+            <!--指定滚动日志的策略，就是什么时候进行新建日志文件输出日志-->
+            <Policies>
+                <!--基于时间的滚动策略-->
+                <!--interval属性用来指定多久滚动一次，默认是1 hour-->
+                <!--modulate=true用来调整时间-->
+                <!--<TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+                <!--指定文件大小的滚动策略-->
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+
+            <!--用来指定同一个文件夹下最多有几个日志文件时开始删除最旧的，创建新的(通过max属性),默认7个-->
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+
+        <!--设置级别为WARN日志输出到warn.log中-->
+        <RollingFile name="WARN" filename="${logPath}/warn.log"
+                     filepattern="${logPath}/warn/${file}-warn.log.zip">
+            <Filters>
+                <!--设置只输出级别为WARN的日志-->
+                <ThresholdFilter level="WARN"/>
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout charset="utf-8" pattern="${patternLayout}"/>
+            <Policies>
+                <!--设置每天打包日志一次-->
+                <!--<TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+                <!--设置日志文件满1MB后打包-->
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!--设置级别为ERROR日志输出到error.log中-->
+        <RollingFile name="ERROR" filename="${logPath}/error.log"
+                     filepattern="${logPath}/error/${file}-error.log.zip">
+            <!--设置只输出级别为ERROR的日志-->
+            <ThresholdFilter level="ERROR"/>
+            <PatternLayout charset="utf-8" pattern="${patternLayout}"/>
+            <Policies>
+                <!--设置每天打包日志一次-->
+                <!--<TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+                <!--设置日志文件满1MB后打包-->
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <!--设置通过邮件发送日志信息-->
+        <!--<SMTP name="Mail" subject="XXXXSaaS系统正式版异常信息" to="xxxxxx@163.com" from="xxxxx@163.com"-->
+        <!--smtpUsername="xxxxx@163.com" smtpPassword="xxx" smtpHost="smtp.163.com" smtpDebug="true"-->
+        <!--smtpPort="25" bufferSize="10">-->
+        <!--<PatternLayout pattern="${patternLayout}" />-->
+        <!--</SMTP>-->
+    </Appenders>
+
+
+    <Loggers>
+
+        <!--name:用来指定该Logger所适用的类或者类所在的包全路径,继承自Root节点.-->
+        <!--level:日志输出级别-->
+        <logger name="org.springframework" level="info"/>
+        <logger name="org.mybatis" level="INFO"/>
+
+        <!--additivity="false"只在自定义的Appender中进行输出-->
+        <logger name="cn.hsernos" level="info" includeLocation="true">
+            <appender-ref ref="INFO"/>
+            <appender-ref ref="WARN"/>
+            <appender-ref ref="ERROR"/>
+            <!--<appender-ref ref="Mail" />-->
+        </logger>
+
+        <!--root节点用来指定项目的根日志，如果没有单独指定Logger，那么就会默认使用该Root日志输出-->
+        <!--level:日志输出级别-->
+        <root level="DEBUG" includeLocation="true">
+            <!--用来指定该日志输出到哪个Appender.-->
+            <appender-ref ref="Console"/>
+        </root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hsernos.dao.DataScreenMapper">
+
+
+    <select id="getAllBenefitsAndTurnover" resultType="cn.hsernos.pojo.DataScreenVO">
+        select IFNULL(a.turnover,0) turnover,IFNULL(a.benefits,0) benefits,college.cid,college.college
+        from (select count(*) turnover, sum(result.benefit) benefits,skilluser.cid from result
+        LEFT JOIN skilluser on result.uid=skilluser.uid GROUP BY skilluser.cid)a right JOIN
+        college on a.cid=college.cid
+        <if test="num==1">order by benefits asc</if>
+        <if test="num==2">order by turnover asc</if>
+    </select>
+
+
+    <select id="getAllColleagebyTime" resultType="cn.hsernos.pojo.DataScreenVO">
+        select IFNULL(b.turnover,0) turnover,college.cid,college.college from
+        (select count(*) turnover,skilluser.cid from
+        (select result.* from result where uid in
+        (select uid from service where rid=#{rid})
+        and
+        (
+        (end &gt; #{starttime} and end &lt; #{endtime}) or
+        (BEGIN &gt; #{starttime} and BEGIN &lt; #{endtime}) or
+        (BEGIN &lt; #{starttime} and end &gt; #{endtime})
+        )
+        )a
+        LEFT JOIN skilluser on a.uid=skilluser.uid
+        )b
+        RIGHT JOIN college on b.cid=college.cid GROUP BY college.cid
+    </select>
+
+    <select id="getResourceByMonth" resultType="cn.hsernos.pojo.DataScreenVO">
+        SELECT
+        count(*) turnover,
+        CONCAT(YEAR(BEGIN),'-',MONTH(BEGIN)) AS times
+        FROM
+        (
+        select result.* from result where
+        (
+        (end &gt; #{starttime} and end &lt; #{endtime}) or
+        (BEGIN &gt; #{starttime} and BEGIN &lt; #{endtime}) or
+        (BEGIN &lt; #{starttime} and end &gt; #{endtime})
+        )
+        and uid in(select uid from service where rid=#{rid})
+        )a
+        GROUP BY times
+    </select>
+
+
+    <select id="getResultByYear" resultType="cn.hsernos.pojo.DataScreenVO">
+        select count(*) turnover,IFNULL(sum(benefit),0) benefits from result where
+        (
+        (end &gt; #{starttime} and end &lt; #{endtime}) or
+        (BEGIN &gt; #{starttime} and BEGIN &lt; #{endtime}) or
+        (BEGIN &lt; #{starttime} and end &gt; #{endtime})
+        )
+        <if test="cid!=null">
+            and uid in(select uid from skilluser where cid=#{cid})
+        </if>
+    </select>
+
+
+    <select id="getResultByFiveYear" resultType="cn.hsernos.pojo.ResourceVO">
+        select IFNULL(count(*),0) turnover,sum(b.benefit) benefits,service.rid from
+        (select result.uid ,result.benefit, skilluser.cid from result LEFT JOIN skilluser on
+        result.uid=skilluser.uid where cid=#{cid})b
+        LEFT JOIN service on b.uid=service.uid GROUP BY service.rid
+    </select>
+
+</mapper>

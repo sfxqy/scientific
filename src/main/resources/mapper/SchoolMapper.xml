@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hsernos.dao.SchoolMapper">
+    <resultMap id="BaseResultMap" type="cn.hsernos.pojo.School">
+        <id column="sid" property="sid" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="clazz" property="clazz" jdbcType="VARCHAR"/>
+        <result column="audit" property="audit" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        sid, name, img, clazz, audit
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.hsernos.pojo.SchoolExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from school
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from school
+        where sid = #{sid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from school
+        where sid = #{sid,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="cn.hsernos.pojo.SchoolExample">
+        delete from school
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="cn.hsernos.pojo.School">
+        <selectKey resultType="java.lang.Integer" keyProperty="sid" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into school (name, img, clazz,
+        audit)
+        values (#{name,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{clazz,jdbcType=VARCHAR},
+        #{audit,jdbcType=TINYINT})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.hsernos.pojo.School">
+        <selectKey resultType="java.lang.Integer" keyProperty="sid" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into school
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="img != null">
+                img,
+            </if>
+            <if test="clazz != null">
+                clazz,
+            </if>
+            <if test="audit != null">
+                audit,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="clazz != null">
+                #{clazz,jdbcType=VARCHAR},
+            </if>
+            <if test="audit != null">
+                #{audit,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="cn.hsernos.pojo.SchoolExample" resultType="java.lang.Integer">
+        select count(*) from school
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update school
+        <set>
+            <if test="record.sid != null">
+                sid = #{record.sid,jdbcType=INTEGER},
+            </if>
+            <if test="record.name != null">
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.img != null">
+                img = #{record.img,jdbcType=VARCHAR},
+            </if>
+            <if test="record.clazz != null">
+                clazz = #{record.clazz,jdbcType=VARCHAR},
+            </if>
+            <if test="record.audit != null">
+                audit = #{record.audit,jdbcType=TINYINT},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update school
+        set sid = #{record.sid,jdbcType=INTEGER},
+        name = #{record.name,jdbcType=VARCHAR},
+        img = #{record.img,jdbcType=VARCHAR},
+        clazz = #{record.clazz,jdbcType=VARCHAR},
+        audit = #{record.audit,jdbcType=TINYINT}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.hsernos.pojo.School">
+        update school
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="clazz != null">
+                clazz = #{clazz,jdbcType=VARCHAR},
+            </if>
+            <if test="audit != null">
+                audit = #{audit,jdbcType=TINYINT},
+            </if>
+        </set>
+        where sid = #{sid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.hsernos.pojo.School">
+        update school
+        set name = #{name,jdbcType=VARCHAR},
+        img = #{img,jdbcType=VARCHAR},
+        clazz = #{clazz,jdbcType=VARCHAR},
+        audit = #{audit,jdbcType=TINYINT}
+        where sid = #{sid,jdbcType=INTEGER}
+    </update>
+</mapper>

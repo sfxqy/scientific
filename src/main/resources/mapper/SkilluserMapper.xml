@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hsernos.dao.SkilluserMapper">
+    <resultMap id="BaseResultMap" type="cn.hsernos.pojo.Skilluser">
+        <id column="uid" property="uid" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="power" property="power" jdbcType="TINYINT"/>
+        <result column="cid" property="cid" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        uid, username, password, power, cid, name
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.hsernos.pojo.SkilluserExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from skilluser
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from skilluser
+        where uid = #{uid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from skilluser
+        where uid = #{uid,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="cn.hsernos.pojo.SkilluserExample">
+        delete from skilluser
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="cn.hsernos.pojo.Skilluser">
+        <selectKey resultType="java.lang.Integer" keyProperty="uid" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into skilluser (username, password, power,
+        cid, name)
+        values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{power,jdbcType=TINYINT},
+        #{cid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.hsernos.pojo.Skilluser">
+        <selectKey resultType="java.lang.Integer" keyProperty="uid" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into skilluser
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="power != null">
+                power,
+            </if>
+            <if test="cid != null">
+                cid,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="power != null">
+                #{power,jdbcType=TINYINT},
+            </if>
+            <if test="cid != null">
+                #{cid,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="cn.hsernos.pojo.SkilluserExample" resultType="java.lang.Integer">
+        select count(*) from skilluser
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update skilluser
+        <set>
+            <if test="record.uid != null">
+                uid = #{record.uid,jdbcType=INTEGER},
+            </if>
+            <if test="record.username != null">
+                username = #{record.username,jdbcType=VARCHAR},
+            </if>
+            <if test="record.password != null">
+                password = #{record.password,jdbcType=VARCHAR},
+            </if>
+            <if test="record.power != null">
+                power = #{record.power,jdbcType=TINYINT},
+            </if>
+            <if test="record.cid != null">
+                cid = #{record.cid,jdbcType=INTEGER},
+            </if>
+            <if test="record.name != null">
+                name = #{record.name,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update skilluser
+        set uid = #{record.uid,jdbcType=INTEGER},
+        username = #{record.username,jdbcType=VARCHAR},
+        password = #{record.password,jdbcType=VARCHAR},
+        power = #{record.power,jdbcType=TINYINT},
+        cid = #{record.cid,jdbcType=INTEGER},
+        name = #{record.name,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.hsernos.pojo.Skilluser">
+        update skilluser
+        <set>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="power != null">
+                power = #{power,jdbcType=TINYINT},
+            </if>
+            <if test="cid != null">
+                cid = #{cid,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where uid = #{uid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.hsernos.pojo.Skilluser">
+        update skilluser
+        set username = #{username,jdbcType=VARCHAR},
+        password = #{password,jdbcType=VARCHAR},
+        power = #{power,jdbcType=TINYINT},
+        cid = #{cid,jdbcType=INTEGER},
+        name = #{name,jdbcType=VARCHAR}
+        where uid = #{uid,jdbcType=INTEGER}
+    </update>
+
+
+    <!--sfx==========================================================================================-->
+    <select id="getAllSkilluser" resultType="cn.hsernos.pojo.HserSkillUserVO">
+        select *from (select
+        b1.username,b1.password,b1.cid,b1.name,b1.college,
+        b2.sex,b2.img,b2.title,b2.degree,b2.fid,b2.`fields`,b2.id, b2.field,b2.phone,b2.email,b2.info,b2.audit
+        from
+        (select s1.*,c1.college from skilluser s1 left join college c1 on s1.cid=c1.cid)
+        b1 left join (select s2.*,a1.field,a1.`fields`,a1.id from skillusers s2 left join
+        (select f1.id,f2.fid,f1.field,f2.`fields` from field f1 left join `fields` f2 on f1.id=f2.id)
+        a1 on s2.fid=a1.fid) b2 on b1.uid=b2.uid) d <if test="cid!=null">where d.cid=#{cid}</if> ORDER BY audit DESC
+    </select>
+
+
+    <select id="getSkilluserByusername" parameterType="cn.hsernos.pojo.Skilluser"
+            resultType="cn.hsernos.pojo.HserSkillUserVO">
+        select *from (select
+        b1.username,b1.password,b1.cid,b1.name,b1.college,
+        b2.sex,b2.img,b2.title,b2.degree,b2.fid,b2.`fields`,b2.id, b2.field,b2.phone,b2.email,b2.info,b2.audit
+        from
+        (select s1.*,c1.college from skilluser s1 left join college c1 on s1.cid=c1.cid)
+        b1 left join (select s2.*,a1.field,a1.`fields`,a1.id from skillusers s2 left join
+        (select f1.id,f2.fid,f1.field,f2.`fields` from field f1 left join `fields` f2 on f1.id=f2.id)
+        a1 on s2.fid=a1.fid) b2 on b1.uid=b2.uid) d
+        <if test="username!=null">where d.username=#{username}</if>
+        <if test="name!=null">where d.name like "%"#{name}"%"</if>
+        <if test="cid!=null">and d.cid=#{cid}</if>
+    </select>
+
+    <select id="getSkilluserByUsername" resultType="cn.hsernos.pojo.Skilluser">
+        select *from skilluser where username=#{username}
+    </select>
+
+    <insert id="addSkikkusers">
+        insert skillusers(uid) values(#{uid})
+    </insert>
+</mapper>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hsernos.dao.HserVoMapper">
+
+    <select id="getDemands" resultType="cn.hsernos.pojo.HserDemandVO" parameterType="String">
+        select nid,d.did,d.name,d.`describe`,d.img from demandlist dl
+        left join demand d on dl.did=d.did
+        <where>
+            audit>0
+            <if test="info != null and info != ''">
+                and ( detail like concat(concat('%',#{info}),'%') or `describe` like concat(concat('%',#{info}),'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="getDemandsByNid" resultType="cn.hsernos.pojo.HserDemandVO" parameterType="int">
+        select nid,d.did did,d.name name,d.`describe` `describe`,d.img img from demandlist dl
+        left join demand d on dl.did=d.did where nid=#{nid}
+    </select>
+
+    <select id="findAuditService" resultType="cn.hsernos.pojo.Service" parameterType="java.lang.Integer">
+        select * from
+        (select s.* from
+        service s
+        left join
+        patent p on s.ids=p.pid where audit>0 and rid=1
+        union
+        select s.* from
+        service s
+        left join
+        school p on s.ids=p.sid where audit>0 and rid=2
+        union
+        select s.* from
+        service s
+        left join
+        software p on s.ids=p.sid where audit>0 and rid=3
+        union
+        select s.*from
+        service s
+        left join
+        team p on s.ids=p.tid where audit>0 and rid=4
+        union
+        select s.* from
+        service s
+        left join
+        terrace p on s.ids=p.tid where audit>0 and rid=5) s where s.sid=#{sid};
+    </select>
+
+
+    <select id="getByYear" resultType="cn.hsernos.pojo.HserStatisticsVO" parameterType="Integer">
+        select date_format(end,'%Y') times,
+        sum(benefit) benefits ,count(audit) sum,sum(audit>0) turnover
+        from result left join skilluser on result.uid=skilluser.uid
+        <where>
+            <if test="cid != null">
+                and cid=#{cid}
+            </if>
+        </where>
+        GROUP BY times;
+    </select>
+
+    <select id="getByQuarter" resultType="cn.hsernos.pojo.HserStatisticsVO" parameterType="Integer">
+        select concat(date_format(end,'%Y'),floor((date_format(end, '%m')+2)/3)) times,
+        sum(benefit) benefits ,count(audit) sum,sum(audit>0) turnover
+        from result left join skilluser on result.uid=skilluser.uid
+        <where>
+            <if test="cid != null">
+                and cid=#{cid}
+            </if>
+        </where>
+        GROUP BY times;
+    </select>
+
+    <select id="getByRid" resultType="cn.hsernos.pojo.HserStatisticsVO" parameterType="Integer">
+        select date_format(end,'%Y') times,
+        sum(benefit) benefits ,count(audit) sum,sum(audit>0) turnover
+        from result left join skilluser on result.uid=skilluser.uid
+        left join service s on s.sid=result.sid
+        <where>
+            <if test="rid != null">
+                and s.rid=#{rid}
+            </if>
+        </where>
+        GROUP BY times
+        having times = #{times}
+    </select>
+
+    <select id="getByMonth" resultType="cn.hsernos.pojo.HserStatisticsVO" parameterType="Integer">
+        select concat(date_format(end,'%Y'),date_format(end,'%m')) times,
+        sum(benefit) benefits ,count(audit) sum,sum(audit>0) turnover
+        from result left join skilluser on result.uid=skilluser.uid
+        <where>
+            <if test="cid != null">
+                and cid=#{cid}
+            </if>
+        </where>
+        GROUP BY times;
+    </select>
+
+    <select id="findResultVo" resultType="cn.hsernos.pojo.HserResultVO" parameterType="Integer">
+        select r.title,r.content,r.benefit,r.begin,r.img,r.end,r.audit,a.achievement,s.name,c.college,n.name
+        needname,n.unit from result r
+        left join achievement a on r.aid=a.aid
+        left join skilluser s on r.uid=s.uid
+        left join college c on s.cid=c.cid
+        left join demandlist ds on ds.id=r.did
+        left join needuser n on ds.nid= n.nid
+        where rid=#{rid}
+    </select>
+
+
+    <select id="getSkillList" resultType="cn.hsernos.pojo.HserSkillListVO" parameterType="String">
+        select s.uid,name,img,info from skilluser s left join skillusers ss on s.uid=ss.uid left join fields fs on
+        ss.fid=fs.fid
+        <where>
+            s.power=3
+            <if test="info!=null and info!=''">
+                and (ss.info like concat(concat('%',#{info}),'%') or fields like concat(concat('%',#{info}),'%') )
+            </if>
+        </where>
+
+    </select>
+
+
+    <select id="selectSkillUserById" resultType="cn.hsernos.pojo.HserSkillUserVO" parameterType="Integer">
+        select
+        s.uid,username,c.cid,college,name,sex,img,title,degree,fs.fid,fields,fs.id,f.field,phone,email,info,audit
+        from skilluser s,college c,skillusers ss,fields fs,field f
+        where s.uid=#{uid} and s.cid=c.cid and s.uid=ss.uid and ss.fid=fs.fid and fs.id=f.id;
+    </select>
+
+    <select id="getServiceById" resultType="cn.hsernos.pojo.HserServiceVO" parameterType="Integer">
+        select s.*,p.name,p.img from
+        (select sid,ids,r.rid,resource from service s,resource r where uid=#{uid} and s.rid=1 and s.rid=r.rid) s
+        left join
+        patent p on s.ids=p.pid
+        union
+        select s.*,p.name,p.img from
+        (select sid,ids,r.rid,resource from service s,resource r where uid=#{uid} and s.rid=2 and s.rid=r.rid) s
+        left join
+        school p on s.ids=p.sid
+        union
+        select s.*,p.name,p.img from
+        (select sid,ids,r.rid,resource from service s,resource r where uid=#{uid} and s.rid=3 and s.rid=r.rid) s
+        left join
+        software p on s.ids=p.sid
+        union
+        select s.*,p.name,p.img from
+        (select sid,ids,r.rid,resource from service s,resource r where uid=#{uid} and s.rid=4 and s.rid=r.rid) s
+        left join
+        team p on s.ids=p.tid
+        union
+        select s.*,p.name,p.img from
+        (select sid,ids,r.rid,resource from service s,resource r where uid=#{uid} and s.rid=5 and s.rid=r.rid) s
+        left join
+        terrace p on s.ids=p.tid;
+    </select>
+
+
+    <select id="findServiceList" resultType="cn.hsernos.pojo.HserServiceVO" parameterType="String">
+        select s.*,p.name,p.img from
+        (select sid,ids,uid,r.rid,resource from service s,resource r where s.rid=1 and s.rid=r.rid) s
+        left join
+        patent p on s.ids=p.pid
+        <where>
+            audit>0
+            <if test="info!=null and info!=''">
+                and (p.name like concat(concat('%',#{info}),'%'))
+            </if>
+        </where>
+        union
+        select s.*,p.name,p.img from
+        (select sid,ids,uid,r.rid,resource from service s,resource r where s.rid=2 and s.rid=r.rid) s
+        left join
+        school p on s.ids=p.sid
+        <where>
+            audit>0
+            <if test="info!=null and info!=''">
+                and (p.name like concat(concat('%',#{info}),'%'))
+            </if>
+        </where>
+        union
+        select s.*,p.name,p.img from
+        (select sid,ids,uid,r.rid,resource from service s,resource r where s.rid=3 and s.rid=r.rid) s
+        left join
+        software p on s.ids=p.sid
+        <where>
+            audit>0
+            <if test="info!=null and info!=''">
+                and (p.name like concat(concat('%',#{info}),'%'))
+            </if>
+        </where>
+        union
+        select s.*,p.name,p.img from
+        (select sid,ids,uid,r.rid,resource from service s,resource r where s.rid=4 and s.rid=r.rid) s
+        left join
+        team p on s.ids=p.tid
+        <where>
+            audit>0
+            <if test="info!=null and info!=''">
+                and (p.name like concat(concat('%',#{info}),'%') or p.introduce like concat(concat('%',#{info}),'%'))
+            </if>
+        </where>
+        union
+        select s.*,p.name,p.img from
+        (select sid,ids,uid,r.rid,resource from service s,resource r where s.rid=5 and s.rid=r.rid) s
+        left join
+        terrace p on s.ids=p.tid
+        <where>
+            audit>0
+            <if test="info!=null and info!=''">
+                and (p.name like concat(concat('%',#{info}),'%') or p.introduce like concat(concat('%',#{info}),'%') )
+            </if>
+        </where>
+    </select>
+
+
+    <!--sfx=============================================================-->
+    <select id="getskilluser" resultType="cn.hsernos.pojo.HserSkillUserVO">
+        select s1.username,s1.password,s1.power,s1.cid,s1.name, s2.*
+        from skilluser s1,skillusers s2 where s1.uid=#{uid} and s2.uid=#{uid}
+    </select>
+
+</mapper>

@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.hsernos.dao.ResultMapper">
+    <resultMap id="BaseResultMap" type="cn.hsernos.pojo.Result">
+        <id column="rid" property="rid" jdbcType="INTEGER"/>
+        <result column="sid" property="sid" jdbcType="INTEGER"/>
+        <result column="did" property="did" jdbcType="INTEGER"/>
+        <result column="uid" property="uid" jdbcType="INTEGER"/>
+        <result column="aid" property="aid" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="benefit" property="benefit" jdbcType="DECIMAL"/>
+        <result column="begin" property="begin" jdbcType="DATE"/>
+        <result column="end" property="end" jdbcType="DATE"/>
+        <result column="audit" property="audit" jdbcType="TINYINT"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+        rid, sid, did, uid, aid, title, img, content, benefit, begin, end, audit
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.hsernos.pojo.ResultExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from result
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from result
+        where rid = #{rid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from result
+        where rid = #{rid,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByExample" parameterType="cn.hsernos.pojo.ResultExample">
+        delete from result
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="cn.hsernos.pojo.Result">
+        <selectKey resultType="java.lang.Integer" keyProperty="rid" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into result (sid, did, uid,
+        aid, title, img, content,
+        benefit, begin, end, audit
+        )
+        values (#{sid,jdbcType=INTEGER}, #{did,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER},
+        #{aid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+        #{benefit,jdbcType=DECIMAL}, #{begin,jdbcType=DATE}, #{end,jdbcType=DATE}, #{audit,jdbcType=TINYINT}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="cn.hsernos.pojo.Result">
+        <selectKey resultType="java.lang.Integer" keyProperty="rid" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into result
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="did != null">
+                did,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="aid != null">
+                aid,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="img != null">
+                img,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="benefit != null">
+                benefit,
+            </if>
+            <if test="begin != null">
+                begin,
+            </if>
+            <if test="end != null">
+                end,
+            </if>
+            <if test="audit != null">
+                audit,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=INTEGER},
+            </if>
+            <if test="did != null">
+                #{did,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="aid != null">
+                #{aid,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="benefit != null">
+                #{benefit,jdbcType=DECIMAL},
+            </if>
+            <if test="begin != null">
+                #{begin,jdbcType=DATE},
+            </if>
+            <if test="end != null">
+                #{end,jdbcType=DATE},
+            </if>
+            <if test="audit != null">
+                #{audit,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="cn.hsernos.pojo.ResultExample" resultType="java.lang.Integer">
+        select count(*) from result
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update result
+        <set>
+            <if test="record.rid != null">
+                rid = #{record.rid,jdbcType=INTEGER},
+            </if>
+            <if test="record.sid != null">
+                sid = #{record.sid,jdbcType=INTEGER},
+            </if>
+            <if test="record.did != null">
+                did = #{record.did,jdbcType=INTEGER},
+            </if>
+            <if test="record.uid != null">
+                uid = #{record.uid,jdbcType=INTEGER},
+            </if>
+            <if test="record.aid != null">
+                aid = #{record.aid,jdbcType=INTEGER},
+            </if>
+            <if test="record.title != null">
+                title = #{record.title,jdbcType=VARCHAR},
+            </if>
+            <if test="record.img != null">
+                img = #{record.img,jdbcType=VARCHAR},
+            </if>
+            <if test="record.content != null">
+                content = #{record.content,jdbcType=VARCHAR},
+            </if>
+            <if test="record.benefit != null">
+                benefit = #{record.benefit,jdbcType=DECIMAL},
+            </if>
+            <if test="record.begin != null">
+                begin = #{record.begin,jdbcType=DATE},
+            </if>
+            <if test="record.end != null">
+                end = #{record.end,jdbcType=DATE},
+            </if>
+            <if test="record.audit != null">
+                audit = #{record.audit,jdbcType=TINYINT},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update result
+        set rid = #{record.rid,jdbcType=INTEGER},
+        sid = #{record.sid,jdbcType=INTEGER},
+        did = #{record.did,jdbcType=INTEGER},
+        uid = #{record.uid,jdbcType=INTEGER},
+        aid = #{record.aid,jdbcType=INTEGER},
+        title = #{record.title,jdbcType=VARCHAR},
+        img = #{record.img,jdbcType=VARCHAR},
+        content = #{record.content,jdbcType=VARCHAR},
+        benefit = #{record.benefit,jdbcType=DECIMAL},
+        begin = #{record.begin,jdbcType=DATE},
+        end = #{record.end,jdbcType=DATE},
+        audit = #{record.audit,jdbcType=TINYINT}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.hsernos.pojo.Result">
+        update result
+        <set>
+            <if test="sid != null">
+                sid = #{sid,jdbcType=INTEGER},
+            </if>
+            <if test="did != null">
+                did = #{did,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="aid != null">
+                aid = #{aid,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="benefit != null">
+                benefit = #{benefit,jdbcType=DECIMAL},
+            </if>
+            <if test="begin != null">
+                begin = #{begin,jdbcType=DATE},
+            </if>
+            <if test="end != null">
+                end = #{end,jdbcType=DATE},
+            </if>
+            <if test="audit != null">
+                audit = #{audit,jdbcType=TINYINT},
+            </if>
+        </set>
+        where rid = #{rid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.hsernos.pojo.Result">
+        update result
+        set sid = #{sid,jdbcType=INTEGER},
+        did = #{did,jdbcType=INTEGER},
+        uid = #{uid,jdbcType=INTEGER},
+        aid = #{aid,jdbcType=INTEGER},
+        title = #{title,jdbcType=VARCHAR},
+        img = #{img,jdbcType=VARCHAR},
+        content = #{content,jdbcType=VARCHAR},
+        benefit = #{benefit,jdbcType=DECIMAL},
+        begin = #{begin,jdbcType=DATE},
+        end = #{end,jdbcType=DATE},
+        audit = #{audit,jdbcType=TINYINT}
+        where rid = #{rid,jdbcType=INTEGER}
+    </update>
+
+
+    <!--sfx=======================================================================-->
+    <select id="selectBySid" resultType="cn.hsernos.pojo.Result">
+        select *from result where sid=#{sid}
+    </select>
+
+    <select id="selectByDid" resultType="cn.hsernos.pojo.Result">
+        select *from result where did=#{did}
+    </select>
+
+
+    <select id="selectByAid" resultType="cn.hsernos.pojo.Result">
+        select *from result where aid=#{aid}
+    </select>
+
+
+    <select id="selectByAidAndCid" resultType="cn.hsernos.pojo.Result">
+        select result.*,skilluser.cid from result LEFT JOIN skilluser on result.uid=skilluser.uid
+        <where>
+            <if test="aid!=null">
+                aid=#{aid}
+            </if>
+            <if test="cid!=null">
+                and cid=#{cid}
+            </if>
+        </where>
+    </select>
+
+    <select id="getResultByPid" resultType="cn.hsernos.pojo.Result">
+        select *from result where sid in
+        (select sid from service where ids=#{ids} and rid=#{rid})
+    </select>
+
+    <select id="getResultByDid" resultType="cn.hsernos.pojo.Result">
+        select *from result where did=#{did}
+    </select>
+
+    <select id="selectAllResultByCid" resultType="cn.hsernos.pojo.Result">
+        select *from result where uid in
+        (select uid from skilluser <if test="cid!=null">where cid=#{cid}</if>)
+    </select>
+
+
+    <select id="selectAllResultByCidAndAid" resultType="cn.hsernos.pojo.Result">
+        select *from result
+        <if test="cid!=null or aid!=null">
+            <where>
+                <if test="cid!=null">
+                    uid in (select uid from skilluser where cid=#{cid})
+                </if>
+                <if test="aid!=null">
+                    and aid=#{aid}
+                </if>
+
+            </where>
+        </if>
+
+
+    </select>
+    <select id="selectByCid" resultType="cn.hsernos.pojo.Result">
+        select *from result where uid in (select uid from skilluser where cid=#{cid})
+    </select>
+
+
+</mapper>

@@ -1,0 +1,50 @@
+logging:
+  config: classpath:log4j2.xml
+
+spring:
+  #  resources:
+  #    static-locations: file:/home/mdx/Pictures
+  mail:
+    host: smtp.163.com
+    username: xiangyangduijie@163.com
+    password: xy123456
+    from: xiangyangduijie@163.com
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+
+
+
+
+
+  http:
+    multipart:
+      max-request-size: 10Mb
+      max-file-size: 30Mb
+
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+master:
+  datasource:
+    url: jdbc:mysql://39.108.51.150:3306/xy?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456
+    driverClassName: com.mysql.jdbc.Driver
+
+
+
+server:
+  port: 80
+  context-path: /xy
+
+
+
