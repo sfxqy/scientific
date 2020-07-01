@@ -20,7 +20,7 @@
         <mybatis-pagehelper>1.2.0</mybatis-pagehelper>
         <mysql-connector>5.1.39</mysql-connector>
         <lombok>1.16.18</lombok>
-        <xstream>1.4.10</xstream>
+        <xstream>1.4.10-java7</xstream>
         <swagger2>2.8.0</swagger2>
         <swagger-bootstrap-ui>1.7</swagger-bootstrap-ui>
         <junit>4.11</junit>
