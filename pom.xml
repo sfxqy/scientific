@@ -23,7 +23,7 @@
         <xstream>1.4.10</xstream>
         <swagger2>2.8.0</swagger2>
         <swagger-bootstrap-ui>1.7</swagger-bootstrap-ui>
-        <junit>4.11</junit>
+        <junit>4.13.1</junit>
         <druid>1.0.18</druid>
     </properties>
 
